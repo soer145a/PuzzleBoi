@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Page Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+  </head>
+  <style>
+    #container {
+      display: grid;
+      background-color: beige;
+    }
+    .piece {
+      outline: 0.5px solid grey;
+    }
+  </style>
+  <body>
+    <img src="" alt="" />
+    <div id="container"></div>
+
+    <button>Load Image</button>
+  </body>
+
+  <script>
+    const imageAddress =
+      "https://www.idenyt.dk/globalassets/denmark/kaledyr-2/berner-sennen/berner-sennen-hvalp.jpg";
+    const numOfXPieces = 4;
+    const numOfYPieces = 4;
+    let container_width;
+    let container_height;
+
+    document.addEventListener("DOMContentLoaded", startTheScript);
+
+    function startTheScript() {
+      document.querySelector("button").addEventListener("click", loadTheImage);
+    }
+
+    function loadTheImage() {
+      document.querySelector("img").src = imageAddress;
+      document.querySelector("img").onload = theImageHasLoaded;
+    }
+
+    function theImageHasLoaded() {
+      console.log("BILLEDET ER ANKOMMET");
+      container_width = document.querySelector("img").width;
+      container_height = document.querySelector("img").height;
+      console.log(container_width, container_height);
+      document.querySelector(
+        "#container"
+      ).style.gridTemplateColumns = `repeat(${numOfXPieces}, 1fr)`;
+      document.querySelector("#container").style.width = `${container_width}px`;
+      document.querySelector(
+        "#container"
+      ).style.height = `${container_height}px`;
+      for (let y = 0; y < numOfYPieces; y++) {
+        for (let x = 0; x < numOfXPieces; x++) {
+          let piece = document.createElement("div");
+
+          piece.style.height = container_height / numOfYPieces + "px";
+
+          piece.classList.add("piece");
+          piece.setAttribute("id", `${x}${y}`);
+          piece.style.backgroundImage = `url(${imageAddress})`;
+          piece.style.backgroundPosition = `${y *
+            (container_width / numOfYPieces)}px ${x *
+            (container_height / numOfXPieces)}px`;
+
+          piece.style.position = "absolute";
+          piece.style.width = `${container_width / numOfYPieces}px`;
+          piece.style.height = container_height / numOfXPieces;
+          piece.style.left = `${Math.random() * 500 + 800}px`;
+          piece.style.top = `${Math.random() * 500 + 250}px`;
+
+          document.querySelector("#container").appendChild(piece);
+        }
+      }
+      for (let y = 0; y < numOfYPieces; y++) {
+        for (let x = 0; x < numOfXPieces; x++) {
+          let dropZone = document.createElement("div");
+
+          dropZone.style.height = container_height / numOfYPieces + "px";
+
+          dropZone.classList.add("dropZone");
+          dropZone.setAttribute("id", `${x}${y}`);
+          dropZone.style.border = "solid black";
+
+          document.querySelector("#container").appendChild(dropZone);
+        }
+      }
+    }
+    function moveImageBackground() {
+      console.log("MOVE IMAGE");
+    }
+  </script>
+</html>
