@@ -15,18 +15,18 @@
       outline: 0.5px solid grey;
     }
   </style>
-  <body>
+  <body class="theBody">
     <img src="" alt="" />
     <div id="container"></div>
-
     <button>Load Image</button>
   </body>
 
   <script>
+    "use strict";
     const imageAddress =
       "https://www.idenyt.dk/globalassets/denmark/kaledyr-2/berner-sennen/berner-sennen-hvalp.jpg";
-    const numOfXPieces = 4;
-    const numOfYPieces = 4;
+    const numOfXPieces = 2;
+    const numOfYPieces = 2;
     let container_width;
     let container_height;
 
@@ -68,9 +68,10 @@
 
           piece.style.position = "absolute";
           piece.style.width = `${container_width / numOfYPieces}px`;
-          piece.style.height = container_height / numOfXPieces;
+          piece.style.height = `${container_height / numOfXPieces}px`;
           piece.style.left = `${Math.random() * 500 + 800}px`;
           piece.style.top = `${Math.random() * 500 + 250}px`;
+          piece.draggable = "true";
 
           document.querySelector("#container").appendChild(piece);
         }
@@ -82,15 +83,67 @@
           dropZone.style.height = container_height / numOfYPieces + "px";
 
           dropZone.classList.add("dropZone");
-          dropZone.setAttribute("id", `${x}${y}`);
-          dropZone.style.border = "solid black";
+          dropZone.setAttribute("id", `${y}${x}`);
 
           document.querySelector("#container").appendChild(dropZone);
         }
       }
+      dragnDrop();
     }
-    function moveImageBackground() {
-      console.log("MOVE IMAGE");
+    function dragnDrop() {
+      console.log("DRAG ME BABY");
+      var dragged;
+
+      /* events fired on the draggable target */
+      document.addEventListener("drag", function(event) {});
+
+      document.addEventListener("dragstart", function(event) {
+        // store a ref. on the dragged elem
+        dragged = event.target;
+        // make it half transparent
+        event.target.style.opacity = 0.5;
+      });
+
+      document.addEventListener("dragend", function(event) {
+        // reset the transparency
+        event.target.style.opacity = "";
+      });
+
+      /* events fired on the drop targets */
+      document.addEventListener("dragover", function(event) {
+        // prevent default to allow drop
+        event.preventDefault();
+      });
+
+      document.addEventListener("drop", function(event) {
+        // prevent default action (open as link for some elements)
+        event.preventDefault();
+        console.log("DROP", event.target.className);
+        // move dragged elem to the selected drop target
+        if (event.target.className == "dropZone") {
+          event.target.style.background = "";
+          dragged.parentNode.removeChild(dragged);
+          event.target.appendChild(dragged);
+          dragged.style.left = event.target.style.left;
+          dragged.style.top = event.target.style.top;
+          checkLoop(dragged);
+        } else if (event.target.className == "theBody") {
+          // park the dragged elem somewhere on the body
+          dragged.style.left = event.pageX + "px";
+          dragged.style.top = event.pageY + "px";
+          checkLoop(dragged, target);
+        }
+      });
+    }
+    function checkLoop(dragged) {
+      let zone = dragged.parentElement.attributes.id;
+
+      console.log(zone, dragged.attributes.id);
+      if (zone === dragged.attributes.id) {
+        console.log("false");
+      } else {
+        console.log("true");
+      }
     }
   </script>
 </html>
